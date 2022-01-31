@@ -1,0 +1,37 @@
+# This is a basic workflow that is manually triggered
+
+name: Name and Address
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Persons name'
+        default: 'Someone'
+        required: true
+      live:
+        description: 'The city the person lives in'
+        default: 'World'
+        required: true
+      
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Saves data to file
+        run: echo "Name:${{ github.event.inputs.name }} Address:${{ github.event.inputs.live }}" > personal_info.txt
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: personal_info
+          path: personal_info.txt
+          retention-days: default
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: personal_info
+  
